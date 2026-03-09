@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "required": [
+    "name",
+    "job",
+    "id",
+    "createdAt",
+    "_meta"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9 ._-]*$"
+    },
+    "job": {
+      "type": "string",
+      "pattern": "^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9 ._-]*$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "_meta": {
+      "type": "object",
+      "required": [
+        "powered_by",
+        "docs_url",
+        "upgrade_url",
+        "example_url",
+        "variant",
+        "message",
+        "cta",
+        "context"
+      ],
+      "properties": {
+        "powered_by": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9 ._-]*$"
+        },
+        "docs_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "upgrade_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "example_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "variant": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9 _-]*$"
+        },
+        "message": {
+          "type": "string"
+        },
+        "cta": {
+          "type": "object",
+          "required": [
+            "label",
+            "url"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "context": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9 _-]*$"
+        }
+      }
+    }
+  }
+}

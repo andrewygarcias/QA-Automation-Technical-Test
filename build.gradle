@@ -1,0 +1,105 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "net.serenity-bdd:serenity-gradle-plugin:4.2.1"
+    }
+}
+
+apply plugin: net.serenitybdd.plugins.gradle.SerenityPlugin
+
+serenity {
+    reports = ["single-page-html"]
+    outputDirectory = "target/site/serenity"
+    sourceDirectory = "target/site/serenity"
+}
+
+
+group = 'com.andrew.automation'
+version = '1.0'
+repositories {
+    mavenCentral()
+}
+defaultTasks 'clean', 'test', 'aggregate'
+
+test {
+    systemProperty 'serenity.outputDirectory', 'target/site/serenity'
+    testLogging {
+        events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+gradle.startParameter.continueOnFailure = true
+test.finalizedBy(aggregate)
+
+
+ext {
+    libs = [
+            lombok  : "org.projectlombok:lombok:${lombokVersion}",
+            test: [
+
+                    serenity: [
+                            core               : "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
+                            model              : "net.serenity-bdd:serenity-model:${serenityCoreVersion}",
+                            junit              : "net.serenity-bdd:serenity-junit:${serenityCoreVersion}",
+                            screenplay         : "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
+                            screenplayWebdriver: "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
+                            screenplayEnsure   : "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}",
+                            cucumber           : "net.serenity-bdd:serenity-cucumber:${serenityCucumberVersion}",
+                            restassured        : "net.serenity-bdd:serenity-rest-assured:${serenityRestAssured}",
+                            rest               : "net.serenity-bdd:serenity-screenplay-rest:${serenityRestAssured}"
+                    ],
+                    jupiter  :"org.junit.jupiter:junit-jupiter:${junitJupiterVersion}",
+                    assertj : "org.assertj:assertj-core:${assertJVersion}",
+                    hamcrest: "org.hamcrest:hamcrest:${hamcrestVersion}",
+                    jsonSchema:"io.rest-assured:json-schema-validator:${jsonSchemaVersion}"
+
+            ]
+    ]
+}
+dependencies {
+    implementation libs.lombok,
+            libs.test.serenity.screenplayWebdriver,
+            libs.test.serenity.screenplayEnsure,
+            libs.test.serenity.rest,
+            libs.test.serenity.restassured,
+            libs.test.serenity.core,
+            libs.test.serenity.screenplay,
+            libs.test.jsonSchema,
+            libs.test.serenity.junit
+
+
+    testImplementation libs.test.jupiter,
+            libs.test.assertj,
+            libs.test.hamcrest,
+            libs.test.serenity.junit,
+            libs.test.serenity.cucumber,
+            libs.test.serenity.rest,
+            libs.test.serenity.restassured,
+            libs.test.serenity.core,
+            libs.test.serenity.model,
+            libs.test.serenity.screenplay,
+            libs.test.jsonSchema
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}
+
